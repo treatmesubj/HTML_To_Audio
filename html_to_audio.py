@@ -1,29 +1,30 @@
 import os
 from bs4 import BeautifulSoup
-from gtts import gTTS
-from gtts_token.gtts_token import Token
+import pyttsx3
+# from gtts import gTTS
+# # from gtts_token.gtts_token import Token
 
 
-class resolute_Token(Token):
-	def __init__(self):
-		super().__init__()
+# class resolute_Token(Token):
+# 	def __init__(self):
+# 		super().__init__()
 
-	def calculate_token(self, *args, **kwargs):
-		while True:
-			try:
-				super().calculate_token(*args, **kwargs)
-				break
-			except Exception as e:
-				if "Unable to find token seed" in str(e):
-					pass
-				else:
-					raise e
+# 	def calculate_token(self, *args, **kwargs):
+# 		while True:
+# 			try:
+# 				super().calculate_token(*args, **kwargs)
+# 				break
+# 			except Exception as e:
+# 				if "Unable to find token seed" in str(e):
+# 					pass
+# 				else:
+# 					raise e
 
 
-class resolute_gTTS(gTTS):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.token = resolute_Token()
+# class resolute_gTTS(gTTS):
+#     def __init__(self, *args, **kwargs):
+#         super().__init__(*args, **kwargs)
+#         self.token = resolute_Token()
 
 
 def html_to_audio(file_path):
@@ -31,9 +32,16 @@ def html_to_audio(file_path):
 		html = f.read()
 	soup = BeautifulSoup(html, 'html.parser')
 	file_text = " ".join(paragraph.text for paragraph in soup.select("p"))
-	speech = resolute_gTTS(text=file_text)
-	speech.save(f"{os.path.splitext(file_path)[0]}.mp3")
+	
+	engine = pyttsx3.init(); engine.setProperty('rate', 200)
+	engine.save_to_file(file_text, f"{os.path.splitext(file_path)[0]}.mp3")
+	engine.runAndWait()
+
 	print(f"{file_path} done...")
+
+
+	# speech = resolute_gTTS(text=file_text)
+	# speech.save(f"{os.path.splitext(file_path)[0]}.mp3")
 
 if __name__ == "__main__":
 
